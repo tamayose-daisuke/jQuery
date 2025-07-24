@@ -43,74 +43,51 @@
     </div>
     <button class="btn" data-js="reset">戻る</button>
   `
-	// 戻るを押したら最初の画面に戻る
+
    $(document).on('click', '.btn', function() {
 		$('.wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
 		});  
 		
+  $(document).on('click', '.search-btn' ,function(){
+		let num = Math.floor(Math.random() * 151); 
 
-
-    $(document).on('click', '.search-btn' ,function(){
-			let num = Math.floor(Math.random() * 151); 
-			 //ポケモンを探すを押したらencountHtmlを表示する。
-			
-      //通信で情報を取得する。
-    $.ajax({
-      url: `https://pokeapi.co/api/v2/pokemon/${num}`,//文字の中に変数を組み込む方法
-      method: 'GET'
-      }).done(function(res) {
-				let imageUrl = res.sprites.front_default; // 画像のURL
-				let name = res.name; 
-				$('#wrapper').html(encountHtml);  // HTML書き換え
-				$('.wrapper .img').attr('src', imageUrl)  // 画像
-      
+  $.ajax({
+    url: `https://pokeapi.co/api/v2/pokemon/${num}`,
+    method: 'GET'
+  }).done(function(res) {
+		let imageUrl = res.sprites.front_default;
+		let name = res.name; 
+		$('#wrapper').html(encountHtml);
+		$('.wrapper .img').attr('src', imageUrl)  
       $.ajax({
 				url: `https://pokeapi.co/api/v2/pokemon-species/${num}/`,
 				method: 'GET'
-			}).done(function(res) {
-        $('.wrapper .name').text(res.names[0].name);  // 名前（日本語）
-        // res.species.url はモンスターの日本語が取得できるAPIを叩くためのurl
-      
-      $.ajax({
-        url: 'https://pokeapi.co/api/v2/pokemon/1',
-        method: 'GET'
-      }).done(function(res) {
-        $(document).on('click','#catch',function(){
-          if(Math.random()<0.5){
-            $.ajax({
-              url: 'https://pokeapi.co/api/v2/item/4',
-              method: 'GET'
-            }).done(function(res){
-              console.log(res.sprites.default);
-              $('#wrapper').html(doneHtml);
-              $(' img').attr('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png')
-            }).fail(function(err){
-              console.log(err);
-            });
-          }else{
-            $('#wrapper').html(failHtml);
-          }
-        })
-      })
-
-      
-			})
+			}).done(function(name_res) {
+        $('.wrapper .name').text(name_res.names[0].name); 
+          $.ajax({
+            url: 'https://pokeapi.co/api/v2/pokemon/1',
+            method: 'GET'
+          }).done(function(res) {
+            $(document).on('click','#catch',function(){
+              if(Math.random()<0.5){
+                $.ajax({
+                  url: 'https://pokeapi.co/api/v2/item/4',
+                  method: 'GET'
+                }).done(function(imgres){
+                  $('#wrapper').html(doneHtml);
+                  $(' img').attr('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png')
+                }).fail(function(err){
+                  console.log(err);
+                });
+              }else{
+                $('#wrapper').html(failHtml);
+              }
+            })
+          })
+       })
 			}).fail(function(err){
 				console.log(err);
       });
-				
-			
-          
-
-        // $.ajax({
-        //   url: 'https://pokeapi.co/api/v2/item/4',
-        //   method: 'GET'
-        // }).done(function(res){
-        //   console.log(res);
-        // }).fail(function(err){
-        //   console.log(err);
-        // })
-
   });
   
   </script>

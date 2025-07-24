@@ -103,8 +103,6 @@
         let selectval = $(this).val();
 
         $('li').each(function(index, element){
-          console.log(element);
-          console.log($(element));
           let roopval = $(element).data('category-type');
           if(selectval === roopval){
             $(element).show();
