@@ -16,6 +16,80 @@
   <script src="../../common/js/jquery.js"></script>
   <script>
     // 回答はここに書いてね
+  let failHtml =
+  `
+    <p class="text">逃げられてしまった...</p>
+    <button class="btn mt" data-js="reset">戻る</button>
+  `
+  // 「ポケモンを探す」後の画面表示
+  let encountHtml =
+  `
+    <p class="name"></p>
+    <div>
+      <img class="img" src="" alt="">
+    </div>
+    <div>
+      <button class="btn" id="catch">捕まえる</button>
+      <button class="btn" data-js="reset">逃げる</button>
+    </div>
+  `
+
+  // 「捕まえる」成功時の画面表示
+  let doneHtml =
+  `
+    <p class="name">ゲットしました</p>
+    <div>
+      <img class="img" src='' alt="">
+    </div>
+    <button class="btn" data-js="reset">戻る</button>
+  `
+
+   $(document).on('click', '.btn', function() {
+		$('.wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
+		});  
+		
+  $(document).on('click', '.search-btn' ,function(){
+		let num = Math.floor(Math.random() * 151); 
+
+  $.ajax({
+    url: `https://pokeapi.co/api/v2/pokemon/${num}`,
+    method: 'GET'
+  }).done(function(res) {
+		let imageUrl = res.sprites.front_default;
+		let name = res.name; 
+		$('#wrapper').html(encountHtml);
+		$('.wrapper .img').attr('src', imageUrl)  
+      $.ajax({
+				url: `https://pokeapi.co/api/v2/pokemon-species/${num}/`,
+				method: 'GET'
+			}).done(function(name_res) {
+        $('.wrapper .name').text(name_res.names[0].name); 
+          $.ajax({
+            url: 'https://pokeapi.co/api/v2/pokemon/1',
+            method: 'GET'
+          }).done(function(res) {
+            $(document).on('click','#catch',function(){
+              if(Math.random()<0.5){
+                $.ajax({
+                  url: 'https://pokeapi.co/api/v2/item/4',
+                  method: 'GET'
+                }).done(function(imgres){
+                  $('#wrapper').html(doneHtml);
+                  $(' img').attr('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png')
+                }).fail(function(err){
+                  console.log(err);
+                });
+              }else{
+                $('#wrapper').html(failHtml);
+              }
+            })
+          })
+       })
+			}).fail(function(err){
+				console.log(err);
+      });
+  });
+  
   </script>
 </body>
 </html>
